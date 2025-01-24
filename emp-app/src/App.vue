@@ -1,10 +1,11 @@
 <template>
   <div class="container">
-    <h1>Employees Management</h1>
-    <!-- emp 추가 버튼 -->
+    <h1>Employees Managment</h1>
+
+    <!-- Add Employee Button -->
     <button @click="openModal(false)" class="add-employee-button">Add New Employee</button>
 
-    <!-- emp list -->
+    <!-- Employee List -->
     <h2>Employee List</h2>
     <table>
       <thead>
@@ -38,43 +39,44 @@
           <td>{{ employee.departmentId }}</td>
           <td>
             <button @click="openModal(true, employee)">Edit</button>
-            <button @click="promptDelte(employee.employeeId, employee.email)">Delete</button>
+            <button @click="promptDelete(employee.employeeId, employee.email)">Delete</button>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <!-- 추가/삭제 모달 -->
     <div v-if="isModalVisible" class="modal">
       <div class="modal-content">
         <h2>{{ isEditing ? 'Edit Employee' : 'Add New Employee' }}</h2>
         <form @submit.prevent="handleSubmit">
           <div class="form-group">
-            <label for="employeeId">Employee ID:</label>
+            <label for="employeeId">Employee ID : </label>
             <input v-model="currentEmployee.employeeId" type="text" id="employeeId" :disabled="isEditing" required />
           </div>
           <div class="form-group">
-            <label for="firstName">First Name:</label>
-            <input v-model="currentEmployee.firstName" type="text" id="firstName" :disabled="isEditing" required />
+            <label for="firstName">First Name : </label>
+            <input v-model="currentEmployee.firstName" type="text" id="firstName" required />
           </div>
           <div class="form-group">
-            <label for="lastName">Last Name:</label>
-            <input v-model="currentEmployee.lastName" type="text" id="lastName" :disabled="isEditing" required />
+            <label for="lastName">Last Name : </label>
+            <input v-model="currentEmployee.lastName" type="text" id="lastName" required />
           </div>
           <div class="form-group">
-            <label for="email">email:</label>
-            <input v-model="currentEmployee.email" type="text" id="email" :disabled="isEditing" required />
+            <label for="email">Email : </label>
+            <input v-model="currentEmployee.email" type="text" id="email" required />
           </div>
           <div class="form-group">
-            <label for="phoneNumber">phoneNumber:</label>
-            <input v-model="currentEmployee.phoneNumber" type="text" id="phoneNumber" :disabled="isEditing" required />
+            <label for="phoneNumber">Phone Number : </label>
+            <input v-model="currentEmployee.phoneNumber" type="text" id="phoneNumber" required />
           </div>
           <div class="form-group">
-            <label for="jobId">jobId:</label>
+            <label for="jobId">Job ID : </label>
             <div v-if="jobs.length">
               <select v-model="currentEmployee.jobId" id="jobId" required>
                 <option value="" disabled>선택하세요.</option>
-                <option v-for="job in jobs" :key="job.jobId" :value="job.jobId">{{ job.jobTitle }}</option>
+                <option v-for="job in jobs" :key="job.jobId" :value="job.jobId">
+                  {{ job.jobTitle }}
+                </option>
               </select>
             </div>
             <div v-else>
@@ -84,32 +86,33 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="hireDate">Hire Date:</label>
-            <input v-model="currentEmployee.hireDate" type="date" id="hireDate" :disabled="isEditing" required />
+            <label for="hireDate">Hire Date : </label>
+            <input v-model="currentEmployee.hireDate" type="date" id="hireDate" required />
           </div>
           <div class="form-group">
-            <label for="salary">salary:</label>
-            <input v-model="currentEmployee.salary" type="number" id="salary" :disabled="isEditing" required />
+            <label for="salary">Salary : </label>
+            <input v-model="currentEmployee.salary" type="number" id="salary" required />
           </div>
           <div class="form-group">
-            <label for="commissionPct">Commission Pct:</label>
-            <input v-model="currentEmployee.commissionPct" type="number" id="commissionPct" :disabled="isEditing"
-              required />
+            <label for="commissionPct">Commission Pct : </label>
+            <input v-model="currentEmployee.commissionPct" type="number" id="commissionPct" required />
           </div>
           <div class="form-group">
-            <label for="managerId">Manager ID:</label>
+            <label for="managerId">Manager ID : </label>
             <select v-model="currentEmployee.managerId" id="managerId">
-              <option value="" disabled>선택하세요.</option>
-              <option v-for="manager in managers" :key="manager.managerId" :value="manager.managerId">{{
-                manager.managerName }}</option>
+              <option value="disabled">선택하세요.</option>
+              <option v-for="manager in managers" :key="manager.managerId" :value="manager.managerId">
+                {{ manager.managerName }}
+              </option>
             </select>
           </div>
           <div class="form-group">
-            <label for="departmentId">Department:</label>
+            <label for="departmentId">Department : </label>
             <select v-model="currentEmployee.departmentId" id="departmentId" required>
-              <option value="" disabled>선택하세요.</option>
+              <option value="disabled">선택하세요.</option>
               <option v-for="department in departments" :key="department.departmentId" :value="department.departmentId">
-                {{ department.departmentName }}</option>
+                {{ department.departmentName }}
+              </option>
             </select>
           </div>
           <div class="modal-actions">
@@ -120,11 +123,11 @@
       </div>
     </div>
 
-    <!-- 페이징 처리 -->
+    <!-- Pagination Controls -->
     <div class="pagination-controls">
-      <button :disabled="currentPage === 1" @click="currentPage--">Previous</button>
-      <span>Page of {{ currentPage }} of {{ totalPages }}</span>
-      <button :disabled="currentPage === totalPages" @click="currentPage++">Next</button>
+      <button :disabled="currentPage == 1" @click="currentPage--">Previous</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button :disabled="currentPage == totalPages" @click="currentPage++">Next</button>
     </div>
   </div>
 </template>
@@ -138,8 +141,8 @@ export default {
       employees: [],
       departments: [],
       jobs: [],
-      manager: [],
-      currentEmployee: {},
+      managers: [],
+      currentEmployee: [],
       isEditing: false,
       isModalVisible: false,
       currentPage: 1,
@@ -152,7 +155,7 @@ export default {
     },
     paginatedEmployees() {
       const start = (this.currentPage - 1) * this.itemsPerPage;
-      const end = start + this.itemsPerPage;
+      const end = start + this.itemsPerPage
       return this.employees.slice(start, end);
     },
   },
@@ -177,7 +180,7 @@ export default {
         const response = await axios.get(endpoint);
         this[targetProperty] = response.data;
       } catch (error) {
-        console.error(`Error fetching data from ${endpoint}:`, error);
+        console.error(`Error fetching   data from   ${endpoint}:`, error);
       }
     },
     handleSubmit() {
@@ -189,21 +192,21 @@ export default {
     },
     async addEmployee() {
       try {
-        const response = await axios.post('http://localhost:8080/api/employees', this.currentEmployee);
+        const response = await axios.post('http://192.168.0.25:8080/api/employees', this.currentEmployee);
         this.employees.push(response.data);
         this.closeModal();
       } catch (error) {
-        console.error('Error adding employee:', error);
+        console.error('Error adding employee : ', error);
       }
     },
     async updateEmployee() {
       try {
-        await axios.put(`http://localhost:8080/api/employees`, this.currentEmployee);
+        await axios.put('http://192.168.0.25:8080/api/employees', this.currentEmployee);
         const index = this.employees.findIndex(e => e.employeeId === this.currentEmployee.employeeId);
         this.employees.splice(index, 1, this.currentEmployee);
         this.closeModal();
       } catch (error) {
-        console.error('Error	updating	employee:', error);
+        console.error('Error updating employee : ', error);
       }
     },
     openModal(editing = false, employee = null) {
@@ -215,37 +218,36 @@ export default {
       this.isModalVisible = false;
       this.currentEmployee = {};
     },
-    async promptDelte(employeeId, email) {
-      const userInput = prompt('삭제할 사원의 이메일을 입력하세요:');
+    async promptDelete(employeeId, email) {
+      const userInput = prompt('삭제할 사원의 이메일을 입력하세요 : ');
       if (userInput && userInput === email) {
         try {
-          await axios.delete(`http://localhost:    /api/employees?empid=${employeeId}
- &email=${email}`);
-          this.employees = this.employees.filter(e => e.employeeId !==
-            employeeId);
-          alert('Employee	successfully	deleted.');
+          await axios.delete(`http://192.168.0.25:8080/api/employees?empid=${employeeId} &email=${email}`);
+          this.employees = this.employees.filter(e => e.employeeId !== employeeId);
+          alert('Employee sucessfully deleted');
         } catch (error) {
-          console.error('Error	deleting	employee:', error);
+          console.error('Error deleting employee : ', error)
         }
       } else {
-        alert('Email	does	not	match.	Deletion	canceled.');
+        alert('Email does not match. Deletion canceled');
       }
     }
   },
   mounted() {
-    this.fetchData('http://localhost:    /api/employees', 'employees');
-    this.fetchData('http://localhost:    /api/employees/jobids', 'jobs');
-    this.fetchData('http://localhost:    /api/employees/mgrids', 'managers');
-    this.fetchData('http://localhost:    /api/employees/deptids',
-      'departments');
+    this.fetchData('http://192.168.0.25:8080/api/employees', 'employees');
+    this.fetchData('http://192.168.0.25:8080/api/employees/jobids', 'jobs');
+    this.fetchData('http://192.168.0.25:8080/api/employees/mgrids', 'managers');
+    this.fetchData('http://192.168.0.25:8080/api/employees/deptids', 'departments');
   }
 };
 </script>
-<style>
+
+<style scoped>
 .container {
   max-width: 800px;
   margin: auto;
   padding: 20px;
+  text-align: center;
 }
 
 .add-employee-button {
